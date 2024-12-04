@@ -10,7 +10,7 @@ class Server:
     WAITTIME_RES_SENDER=1
     N_RETRIES_RES_SENDER=3
     
-    def __init__(self,ip='*' job_port=5555,pub_port=5556):
+    def __init__(self,ip='*', job_port=5555,pub_port=5556):
         
         self.pub_port=pub_port
         self.job_port= job_port
