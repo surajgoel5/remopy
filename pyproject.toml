@@ -21,6 +21,9 @@ dependencies = [
   "dill","pyzmq"
 ]
 
+[project.scripts]
+remopy_server = "remopy.cli:main"
+
 [project.optional-dependencies]
 dev = [
     "coverage",  # testing
