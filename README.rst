@@ -23,14 +23,16 @@ remopy
 Python package for remotely executing python functions during runtime
 
 
-* Free software: MIT license
-* Documentation: https://remopy.readthedocs.io.
+# Installation
 
+Stable release
+--------------
 
-Features
---------
+To install slm, run this command in your terminal:
 
-* TODO
+```
+    pip install git+https://github.com/surajgoel5/remopy.git
+```
 
 Credits
 -------
