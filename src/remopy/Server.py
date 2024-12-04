@@ -31,7 +31,7 @@ class Server:
         """Main loop to handle incoming jobs."""
         while True:
             message = self.job_socket.recv()
-            client_ip=server.job_socket.getsockopt(zmq.LAST_ENDPOINT).decode().split('//')[-1].split(':')[0]
+            client_ip=self.job_socket.getsockopt(zmq.LAST_ENDPOINT).decode().split('//')[-1].split(':')[0]
             job_data = dill.loads(message)
 
             func_serialized = job_data["func"]
