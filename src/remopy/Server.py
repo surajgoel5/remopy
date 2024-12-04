@@ -87,20 +87,25 @@ class Server:
                             "traceback": job_info.get("traceback"),
                              "res_sent":job_info.get("res_sent")
                         }
-                        print(f'[[PORT {self.pub_port}]] {pub_data} ')
+                        # print(f'[[PORT {self.pub_port}]] {pub_data} ')
                         self.pub_socket.send_json(pub_data)
             time.sleep(1)
 
   
     def send_result(self,job_id,result):#
+        print('Trying to send result')
         for i in range(self.N_RETRIES_RES_SENDER):
             try:
-                
+                print(f'Trying {i}')
                 context = zmq.Context()
+                print(1)
                 res_socket = context.socket(zmq.REQ)
+                print(2)
                 ip_res=self.jobs[job_id]["machine_ip"]
+                print(3)
                 if ip_res == '0.0.0.0':
                     ip_res='127.0.0.1'
+                print(4)
                 job_res_port=self.jobs[job_id]["machine_result_port"]
                 print(f'Connecting to tcp://{ip_res}:{job_res_port} to send result back for job {job_id}')
                 res_socket.connect(f"tcp://{ip_res}:{job_res_port}")
