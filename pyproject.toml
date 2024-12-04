@@ -22,7 +22,7 @@ dependencies = [
 ]
 
 [project.scripts]
-remopyserver = "remopy.cli:main"
+remopy_server = "remopy.cli:main"
 
 [project.optional-dependencies]
 dev = [
