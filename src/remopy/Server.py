@@ -87,7 +87,7 @@ class Server:
                             "traceback": job_info.get("traceback"),
                              "res_sent":job_info.get("res_sent")
                         }
-                        # print(f'[[PORT {self.pub_port}]] {pub_data} ')
+                        print(f'[[PORT {self.pub_port}]] {pub_data} ')
                         self.pub_socket.send_json(pub_data)
             time.sleep(1)
 
