@@ -102,6 +102,7 @@ class Server:
                 if ip_res == '0.0.0.0':
                     ip_res='127.0.0.1'
                 job_res_port=self.jobs[job_id]["machine_result_port"]
+                print(f'Connecting to tcp://{ip_res}:{job_res_port} to send result back for job {job_id}')
                 res_socket.connect(f"tcp://{ip_res}:{job_res_port}")
                 res_socket.send(dill.dumps(result))
                 message =  res_socket.recv_json()
