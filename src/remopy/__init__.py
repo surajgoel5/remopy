@@ -5,4 +5,4 @@ __email__ = 'goel.suraj5@gmail.com'
 __version__ = '0.1.0'
 
 from .client import Client
-from .cerver import Server
+from .server import Server
