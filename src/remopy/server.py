@@ -51,6 +51,9 @@ class Server:
             #thread.start()
             result=self.worker(job_id,func_serialized, args_serialized, kwargs_serialized)
             self.job_socket.send(dill.dumps({"job_id": job_id, "result": result}))
+            self.jobs[job_id]["res_sent"]=True
+            self.jobs.pop(job_id)
+            
             
     def worker(self, job_id, func_serialized, args_serialized, kwargs_serialized):
         """Worker thread to process a job."""
@@ -104,5 +107,3 @@ class Server:
         print("Server is running...")
         while True:
             time.sleep(1)
-#server = Server(job_port='5554',pub_port='5553')
-#server.run()
