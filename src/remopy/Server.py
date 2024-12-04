@@ -10,18 +10,18 @@ class Server:
     WAITTIME_RES_SENDER=1
     N_RETRIES_RES_SENDER=3
     
-    def __init__(self, job_port=5555,pub_port=5556):
+    def __init__(self,ip='*' job_port=5555,pub_port=5556):
         
         self.pub_port=pub_port
         self.job_port= job_port
         self.context = zmq.Context()
         
         self.job_socket = self.context.socket(zmq.REP)
-        self.job_socket.bind(f"tcp://*:{job_port}")
+        self.job_socket.bind(f"tcp://{ip}:{job_port}")
 
                 
         self.pub_socket = self.context.socket(zmq.PUB)
-        self.pub_socket.bind(f"tcp://*:{pub_port}")
+        self.pub_socket.bind(f"tcp://{ip}:{pub_port}")
 
         
         self.jobs = {}  # Store job detail
