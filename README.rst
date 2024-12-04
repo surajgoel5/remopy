@@ -28,7 +28,7 @@ Python package for remotely executing python functions during runtime
 Stable release
 --------------
 
-To install slm, run this command in your terminal:
+To install remopy, run this command in your terminal:
 
 ```
     pip install git+https://github.com/surajgoel5/remopy.git
