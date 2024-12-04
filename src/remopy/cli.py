@@ -1,6 +1,6 @@
 # cli.py
 import argparse
-from .server import Server
+from .Server import Server
 
 def main():
     parser = argparse.ArgumentParser(description="Run the Server.")
