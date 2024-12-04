@@ -4,7 +4,7 @@ import threading
 import time
 
 class Client:
-    def __init__(self, server_address="localhost", job_port=5555,pub_port=5556,res_port=2000):
+    def __init__(self, server_address="localhost", job_port=5555,sub_port=5556,res_port=2000):
         self.context = zmq.Context()
         # Socket for sending jobs
         self.res_port=res_port
@@ -15,13 +15,13 @@ class Client:
 
 
         # Socket for subscribing to progress updates
-        self.pub_socket = self.context.socket(zmq.SUB)
-        self.pub_socket.connect(f"tcp://{server_address}:{pub_port}")
-        self.pub_socket.setsockopt_string(zmq.SUBSCRIBE, "")  # Subscribe to all messages
+        self.sub_socket = self.context.socket(zmq.SUB)
+        self.sub_socket.connect(f"tcp://{server_address}:{sub_port}")
+        self.sub_socket.setsockopt_string(zmq.SUBSCRIBE, "")  # Subscribe to all messages
 
     def listen_for_updates(self):
         """Listen for job progress updates."""
-        message = self.pub_socket.recv_json()
+        message = self.sub_socket.recv_json()
         return message 
         
     def submit_job(self, func, *args, **kwargs):
