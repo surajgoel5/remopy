@@ -31,27 +31,30 @@ class Server:
         """Main loop to handle incoming jobs."""
         while True:
             message = self.job_socket.recv()
-            client_ip=self.job_socket.getsockopt(zmq.LAST_ENDPOINT).decode().split('//')[-1].split(':')[0]
+            #client_ip=self.job_socket.getsockopt(zmq.LAST_ENDPOINT).decode().split('//')[-1].split(':')[0]
             job_data = dill.loads(message)
 
             func_serialized = job_data["func"]
             args_serialized = dill.dumps(job_data.get("args", []))
             kwargs_serialized = dill.dumps(job_data.get("kwargs", {}))
-            result_port=job_data["res_port"]
+            #result_port=job_data["res_port"]
 
             job_id = str(uuid.uuid4())
             with self.lock:
-                self.jobs[job_id] = {"status": "running", "result": None, "machine_ip": client_ip,"machine_result_port":result_port, "res_sent":False}  
-            self.job_socket.send_json({"job_id": job_id, "status": "received"})
-            thread = threading.Thread(
-                target=self.worker,
-                args=(job_id, func_serialized, args_serialized, kwargs_serialized),
-                daemon=True,
-            )
-            thread.start()
-
+                self.jobs[job_id] = {"status": "running", "result": None,  "res_sent":False}  
+            #self.job_socket.send_json({"job_id": job_id, "status": "received"})
+            #thread = threading.Thread(
+            #    target=self.worker,
+            #    args=(job_id, func_serialized, args_serialized, kwargs_serialized),
+            #    daemon=True,
+            #)
+            #thread.start()
+            result=self.worker(job_id,func_serialized, args_serialized, kwargs_serialized)
+            self.job_socket.send(dill.dumps({"job_id": job_id, "result": result}))
+            
     def worker(self, job_id, func_serialized, args_serialized, kwargs_serialized):
         """Worker thread to process a job."""
+        
         result=None
         try:
             # Deserialize function and arguments
@@ -72,8 +75,9 @@ class Server:
                 self.jobs[job_id]["traceback"] = traceback.format_exc()
         
         print('Job complete', job_id)
-        self.send_result(job_id,result)
-                
+        #self.send_result(job_id,result)
+        return result
+        
     def update_clients(self):
         """Publish periodic job status updates."""
         while True:
@@ -91,40 +95,7 @@ class Server:
                         self.pub_socket.send_json(pub_data)
             time.sleep(1)
 
-  
-    def send_result(self,job_id,result):#
-        print('Trying to send result')
-        for i in range(self.N_RETRIES_RES_SENDER):
-            try:
-                print(f'Trying {i}')
-                context = zmq.Context()
-                print(1)
-                res_socket = context.socket(zmq.REQ)
-                print(2)
-                ip_res=self.jobs[job_id]["machine_ip"]
-                print(3)
-                if ip_res == '0.0.0.0':
-                    ip_res='127.0.0.1'
-                print(4)
-                job_res_port=self.jobs[job_id]["machine_result_port"]
-                print(f'Connecting to tcp://{ip_res}:{job_res_port} to send result back for job {job_id}')
-                res_socket.connect(f"tcp://{ip_res}:{job_res_port}")
-                res_socket.send(dill.dumps(result))
-                message =  res_socket.recv_json()
-                # print(message)
-                # if message['recieved']=='recieved':
-                    
-                self.jobs[job_id]["res_sent"] =  True
-                self.jobs.pop(job_id)
-                print(f'Job Result Recieved {job_id}')
-                break
-                #     self.jobs.pop(job_id)
-                #     print("Job Result Recieved")
-                # else:
-                #     pass
-            except Exception as e:
-                print(e)
-                time.sleep(self.WAITTIME_RES_SENDER)
+
     
     def run(self):
         """Run the server."""
@@ -133,5 +104,5 @@ class Server:
         print("Server is running...")
         while True:
             time.sleep(1)
-# server = Server()
-# server.run()
+#server = Server(job_port='5554',pub_port='5553')
+#server.run()
