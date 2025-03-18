@@ -50,7 +50,7 @@ class Server:
             #)
             #thread.start()
             result=self.worker(job_id,func_serialized, args_serialized, kwargs_serialized)
-            self.job_socket.send(dill.dumps({"job_id": job_id, "result": result},"more_info":self.jobs[job_id]))
+            self.job_socket.send(dill.dumps({"job_id": job_id, "result": result,"more_info":self.jobs[job_id]}))
             self.jobs[job_id]["res_sent"]=True
             self.jobs.pop(job_id)
             
